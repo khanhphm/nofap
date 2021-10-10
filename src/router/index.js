@@ -2,6 +2,9 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from '../views/Home.vue'
 import History from '../views/History.vue'
+import Rankings from '../views/Rankings.vue'
+import SignIn from '../views/SignIn.vue'
+import SignUp from '../views/SignUp.vue'
 
 Vue.use(VueRouter);
 
@@ -21,7 +24,25 @@ const routes = [
     meta: {
       val: 1
     }
-  }
+  },
+  {
+    path: "/rankings",
+    name: "Rankings",
+    component: Rankings,
+    meta: {
+      val: 2
+    }
+  },
+  {
+    path:'SignIn',
+    name: "SignIn",
+    component: SignIn
+  },  
+  {
+    path:'SignUp',
+    name: "SignUp",
+    component: SignUp
+  },
 ];
 
 const router = new VueRouter({

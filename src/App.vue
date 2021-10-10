@@ -1,5 +1,5 @@
 <template>
-  <v-app
+  <v-app dark
     v-touch="{
       right: () => {
         drawer = true;
@@ -17,16 +17,13 @@
 
     <v-app-bar class="d-flex justify-center" dark app>
       <v-app-bar-title class="d-flex justify-center text-logo">
-        NO<span>FAP</span></v-app-bar-title
+        NOT<span>DO</span></v-app-bar-title
       >
-      <v-navigation-drawer temporary width="500" app v-model="drawer">
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempora a
-        minima, soluta maiores reiciendis, explicabo illum voluptatibus quos eum
-        id odio nostrum dolor, unde fuga neque quaerat dolorum. Assumenda,
-        temporibus.
-      </v-navigation-drawer>
+       <v-navigation-drawer hide-overlay temporary dark width="500" app v-model="drawer">
+      <User />
+    </v-navigation-drawer>
     </v-app-bar>
-
+   
     <v-main>
       <router-view></router-view>
     </v-main>
@@ -47,7 +44,7 @@
         <span>History</span>
         <v-icon>mdi-history</v-icon>
       </v-btn>
-      <v-btn icon width="100%">
+      <v-btn icon width="100%" @click="$router.push('/rankings')">
         <span>Rankings</span>
         <v-icon>mdi-format-list-numbered</v-icon>
       </v-btn>
@@ -56,9 +53,10 @@
 </template>
 
 <script>
+import User from "./components/User.vue";
 export default {
   name: "App",
-
+  components: { User },
   data: () => ({ drawer: false }),
 };
 </script>
@@ -75,9 +73,12 @@ export default {
 }
 #btn {
   z-index: 5;
-  position: absolute;
+  position: fixed;
   top: 50%;
   left: -40px;
+}
+v-navigation-drawer {
+  z-index: 999999;
 }
 
 @media screen and (max-width: 650px) {

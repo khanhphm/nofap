@@ -42,7 +42,6 @@ export default {
   display: flex;
   align-items: flex-end;
 }
-@media screen and (max-height: 600px) {
 
-}
+
 </style>
