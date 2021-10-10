@@ -62,6 +62,7 @@ export default {
               updateProfile(auth.currentUser,{
                   displayName:this.displayName
               })
+              alert("Đăng Ký Thành Công")
               this.$router.push("/")
           }).catch((err)=>{
               alert(err.message)
