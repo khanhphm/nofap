@@ -29,6 +29,7 @@
 </template>
 
 <script>
+import {getAuth, onAuthStateChanged} from 'firebase/auth'
 export default {
   data: () => {
     return {
@@ -76,6 +77,14 @@ export default {
       ],
     };
   },
+  beforeMount(){
+    const auth = getAuth()
+    onAuthStateChanged(auth,(user)=>{
+      if(!user){
+        this.$router.push('/signin')
+      }
+    })
+  }
 };
 </script>
 

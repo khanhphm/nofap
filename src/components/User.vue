@@ -8,7 +8,7 @@
 
         <h1 class="text-center text-h4 mb-4 font-weight-bold mt-4">
           Lorem Ipsum
-          <v-btn id="edit" small fab dark color="success"
+          <v-btn  id="edit" small fab dark color="success"
             ><v-icon dark>mdi-account-edit</v-icon></v-btn
           >
         </h1>
@@ -43,12 +43,29 @@
         </v-card>
       </v-col>
     </v-row>
+    <v-btn class="logout" color="error" fab dark @click="signout()"> <v-icon dark>mdi-logout</v-icon>
+    </v-btn>
   </v-container>
 </template>
 
 <script>
+import {getAuth,signOut,onAuthStateChanged} from 'firebase/auth'
+
 export default {
   name: "User",
+  methods:{
+      signout(){
+          const auth = getAuth()
+          signOut(auth)
+          this.$router.push("/signin")
+          
+      }
+  },
+  beforeMount(){
+      onAuthStateChanged(getAuth(),(user)=>{
+          if(!user) this.$router.push('/signin')
+      })
+  }
 };
 </script>
 
@@ -56,5 +73,11 @@ export default {
 .num {
   font-size: 2.5rem;
   padding: 10px 0;
+}
+.logout{
+    position: absolute;
+    top:0;
+    right: 0;
+    margin: 10px 10px;
 }
 </style>

@@ -21,6 +21,8 @@
 <script>
 import Counter from "../components/Home/Counter.vue";
 import History from "../components/Home/History.vue";
+import {getAuth, onAuthStateChanged} from 'firebase/auth'
+
 export default {
   name: "Home",
 
@@ -28,8 +30,13 @@ export default {
     Counter,
     History
   },
-  mounted(){
-    console.log(this.$router.currentRoute.meta.val)
+  beforeMount(){
+    const auth = getAuth()
+    onAuthStateChanged(auth,(user)=>{
+      if(!user){
+        this.$router.push('/signin')
+      }
+    })
   }
 };
 </script>

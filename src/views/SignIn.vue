@@ -1,5 +1,5 @@
 <template>
-  <v-container class="">
+  <v-container>
     <v-row>
       <v-col>
         <v-card class="mx-auto" elevation="0" max-width="300px">
@@ -11,18 +11,20 @@
               color="black"
               label="Email"
               :rules="[rules.email]"
+              v-model="email"
             ></v-text-field>
             <v-text-field
               type="password"
               color="black"
               label="Password"
+              v-model="password"
             ></v-text-field>
           </v-card-text>
           <v-card-actions class="justify-center">
-            <v-btn dark color="black">Sign In</v-btn>
+            <v-btn dark color="black" @click="signin()">Sign In</v-btn>
           </v-card-actions>
 
-          <p class="text-center text-caption">
+          <p class="text-center text-caption mt-2">
             Need an account?? <router-link to="/signup">Sign Up</router-link>
           </p>
         </v-card>
@@ -32,6 +34,7 @@
 </template>
 
 <script>
+import {getAuth, onAuthStateChanged, signInWithEmailAndPassword} from 'firebase/auth'
 export default {
   data: () => ({
     rules: {
@@ -42,7 +45,23 @@ export default {
         return pattern.test(value) || "Invalid e-mail.";
       },
     },
+    email:'',
+    password:''
   }),
+  beforeMount(){
+    onAuthStateChanged(getAuth(),(user)=>{
+          if(user) this.$router.push('/')
+      })
+  },
+  methods:{
+    signin(){
+      signInWithEmailAndPassword(getAuth(),this.email, this.password).then(()=>{
+        alert("Đăng Nhập Thành Công")
+      }).catch((err)=>{
+        alert(err.message)
+      })
+    }
+  }
 };
 </script>
 

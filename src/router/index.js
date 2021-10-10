@@ -14,7 +14,8 @@ const routes = [
     name: "Home",
     component: Home,
     meta: {
-      val: 0
+      val: 0,
+      auth: true
     }
   },
   {
@@ -22,7 +23,8 @@ const routes = [
     name: "History",
     component: History,
     meta: {
-      val: 1
+      val: 1,
+      auth: true
     }
   },
   {
@@ -30,18 +32,25 @@ const routes = [
     name: "Rankings",
     component: Rankings,
     meta: {
-      val: 2
+      val: 2,
+      auth: true
     }
   },
   {
     path:'/signin',
     name: "SignIn",
-    component: SignIn
+    component: SignIn,
+    meta: {
+      auth: false
+    }
   },  
   {
     path:'/signup',
     name: "SignUp",
-    component: SignUp
+    component: SignUp,
+    meta:{
+      auth:false
+    }
   },
 ];
 

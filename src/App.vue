@@ -2,14 +2,14 @@
   <v-app dark
     v-touch="{
       right: () => {
-        drawer = true;
+        drawer = $router.currentRoute.meta.auth;
       },
       left: () => {
         drawer = false;
       },
     }"
   >
-    <div id="btn" @click="drawer = true">
+    <div v-show="$router.currentRoute.meta.auth"  id="btn" @click="drawer = $router.currentRoute.meta.auth">
       <v-btn dark rounded class="pl-14">
         <v-icon color="success">mdi-account-arrow-right</v-icon>
       </v-btn>
@@ -20,7 +20,7 @@
         NOT<span>DO</span></v-app-bar-title
       >
        <v-navigation-drawer hide-overlay temporary dark width="500" app v-model="drawer">
-      <User />
+      <User v-show="$router.currentRoute.meta.auth"/>
     </v-navigation-drawer>
     </v-app-bar>
    
@@ -58,6 +58,7 @@ export default {
   name: "App",
   components: { User },
   data: () => ({ drawer: false }),
+  
 };
 </script>
 
