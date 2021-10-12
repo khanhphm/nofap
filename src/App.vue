@@ -17,7 +17,7 @@
 
     <v-app-bar class="d-flex justify-center" dark app>
       <v-app-bar-title class="d-flex justify-center text-logo">
-        NOT<span>DO</span></v-app-bar-title
+        NO<span>FAP</span></v-app-bar-title
       >
        <v-navigation-drawer hide-overlay temporary dark width="500" app v-model="drawer">
       <User v-show="$router.currentRoute.meta.auth"/>
