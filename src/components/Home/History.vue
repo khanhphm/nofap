@@ -4,44 +4,60 @@
 
     <v-card-text>
       <div id="boxx">
-          <v-sparkline
-        :value="history"
-        smooth="10"
-        line-width="2"
-        stroke-linecap="round"
-        type="trend"
-        auto-draw
-        color="white"
-        padding="20"
-        auto-draw-durations="2000"
-        label-size="8"
-        height="150"
-      >
-        <template class="text-h4" v-slot:label="item">
-          {{ item.value }} DAY
-        </template>
-      </v-sparkline>
+        <v-sparkline
+          :value="history"
+          smooth="10"
+          line-width="2"
+          stroke-linecap="round"
+          type="trend"
+          auto-draw
+          color="white"
+          padding="20"
+          auto-draw-durations="2000"
+          label-size="8"
+          height="150"
+        >
+          <template v-slot:label="item">
+            {{ item.value }}D
+          </template>
+        </v-sparkline>
       </div>
     </v-card-text>
   </v-card>
 </template>
 
 <script>
+import { getAuth, onAuthStateChanged } from "@firebase/auth";
+import { doc, getFirestore, onSnapshot } from "@firebase/firestore";
 export default {
   data: () => {
     return {
-      history: [5, 2, 4, 6, 2, 1, 3],
+      history: [],
     };
+  },
+
+  mounted() {
+    //const auth = getAuth()
+    //const user = auth.currentUser
+    onAuthStateChanged(getAuth(), (user) => {
+      //console.log("get data ",user.uid);
+      if (user) {
+        const db = getFirestore();
+        const docRef = doc(db, "users", user.uid);
+        onSnapshot(docRef, (snap) => {
+          this.history = snap.data().chart.slice(-10);
+          //console.log(snap.data().chart)
+        });
+      }
+    });
   },
 };
 </script>
 
 <style scoped>
-#boxx{
+#boxx {
   height: 30vh;
   display: flex;
   align-items: flex-end;
 }
-
-
 </style>

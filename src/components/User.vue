@@ -112,6 +112,7 @@ export default {
     url: null,
     image: null,
     displayName: null,
+    numOfRelapse:0
   }),
   methods: {
     signout() {

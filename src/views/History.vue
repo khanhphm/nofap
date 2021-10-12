@@ -11,7 +11,7 @@
               <v-row>
                 <v-col class="d-flex flex-column justify-center" cols="4">
                     <h4 class="text-center">STREAK</h4>
-                    <h2 class="text-center">{{ item.streak }}D</h2>
+                    <h2 class="text-center">{{ item.long }}D</h2>
                     <p class="text-center text-caption mb-0">{{ item.date }}</p>
                 </v-col>
                 <v-divider vertical></v-divider>
@@ -30,6 +30,7 @@
 
 <script>
 import {getAuth, onAuthStateChanged} from 'firebase/auth'
+import { doc, getFirestore, onSnapshot } from '@firebase/firestore';
 export default {
   data: () => {
     return {
@@ -82,6 +83,12 @@ export default {
     onAuthStateChanged(auth,(user)=>{
       if(!user){
         this.$router.push('/signin')
+      }else{
+        const db = getFirestore()
+        onSnapshot(doc(db,"users",user.uid),(snap)=>{
+          this.history = snap.data().history.reverse()
+          console.log(snap.data())
+        })
       }
     })
   }

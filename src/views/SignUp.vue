@@ -8,7 +8,11 @@
               <v-chip dark><h2>Sign Up</h2></v-chip>
             </v-card-title>
             <v-card-text>
-              <v-text-field color="black" label="User Name" v-model="displayName"></v-text-field>
+              <v-text-field
+                color="black"
+                label="User Name"
+                v-model="displayName"
+              ></v-text-field>
               <v-text-field
                 color="black"
                 label="Email"
@@ -37,43 +41,64 @@
 </template>
 
 <script>
-import {getAuth, createUserWithEmailAndPassword, updateProfile, onAuthStateChanged } from 'firebase/auth'
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  updateProfile,
+  onAuthStateChanged,
+} from "firebase/auth";
+import { setDoc, getFirestore, doc } from "firebase/firestore";
 
 export default {
   data: () => ({
     rules: {
       counter: (value) => value.length <= 20 || "Max 20 characters",
-      email: (value) => { //Nhớ thêm lại cái value vào đây
+      email: (value) => {
+        //Nhớ thêm lại cái value vào đây
         const pattern =
           /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return pattern.test(value) || "Invalid e-mail.";
       },
     },
 
-    email:'',
-    displayName:'',
-    password:''
-
+    email: "",
+    displayName: "",
+    password: "",
   }),
-  methods:{
-      signup(){
-          const auth = getAuth()
-          createUserWithEmailAndPassword(auth, this.email, this.password).then(()=>{
-              updateProfile(auth.currentUser,{
-                  displayName:this.displayName
-              })
-              alert("Đăng Ký Thành Công")
-              this.$router.push("/")
-          }).catch((err)=>{
-              alert(err.message)
-          })
-      }
+  methods: {
+    signup() {
+      const auth = getAuth();
+      createUserWithEmailAndPassword(auth, this.email, this.password)
+        .then(() => {
+          updateProfile(auth.currentUser, {
+            displayName: this.displayName,
+          });
+          alert("Đăng Ký Thành Công");
+
+          const db = getFirestore();
+          //ghi thời gian đăng ký
+
+          let ref = doc(db, "users", auth.currentUser.uid);
+          setDoc(ref, {
+            record: 0,
+            history: [],
+            lastRelapse: new Date().getTime(),
+            chart: [0,0,0,0,0,0,0,0,0,0],
+            numOfRelapse: 0,
+          });
+
+          this.$router.push("/");
+        })
+        .catch((err) => {
+          alert(err.message);
+        });
+    },
   },
-  beforeMount(){
-      onAuthStateChanged(getAuth(),(user)=>{
-          if(user) this.$router.push('/')
-      })
-  }
+  beforeMount() {
+    onAuthStateChanged(getAuth(), (user) => {
+      if (user) this.$router.push("/");
+    });
+  },
 };
 </script>
 
