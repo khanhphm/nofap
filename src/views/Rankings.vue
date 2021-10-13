@@ -14,12 +14,10 @@
                     <img :src="item.avt" />
                   </v-avatar>
                 </v-col>
-                    <v-divider
-                      vertical
-                    ></v-divider>
+                <v-divider vertical></v-divider>
                 <v-col cols="9">
                   <span class="text-subtitle-2">{{ item.displayName }}</span>
-                  <h1>{{ item.streak }} DAY</h1>
+                  <h1>{{getDate(item.lastRelapse)}} DAY</h1>
                 </v-col>
               </v-row>
             </v-container>
@@ -31,55 +29,39 @@
 </template>
 
 <script>
+import {
+  collection,
+  getFirestore,
+  onSnapshot,
+  orderBy,
+  query,
+} from "@firebase/firestore";
 export default {
   data: () => ({
-    rankings: [
-      {
-        avt: "https://i.pravatar.cc/50",
-        displayName: "Lorem Ipsum",
-        streak: 561,
-        relapseTime: 30,
-      },
-      {
-        avt: "https://i.pravatar.cc/50",
-        displayName: "Lorem Ipsum",
-        streak: 424,
-        relapseTime: 30,
-      },
-      {
-        avt: "https://i.pravatar.cc/50",
-        displayName: "Lorem Ipsum",
-        streak: 83,
-        relapseTime: 30,
-      },
-      {
-        avt: "https://i.pravatar.cc/50",
-        displayName: "Lorem Ipsum",
-        streak: 43,
-        relapseTime: 30,
-      },
-      {
-        avt: "https://i.pravatar.cc/50",
-        displayName: "Lorem Ipsum",
-        streak: 41,
-        relapseTime: 30,
-      },
-      {
-        avt: "https://i.pravatar.cc/50",
-        displayName: "Lorem Ipsum",
-        streak: 37,
-        relapseTime: 30,
-      },
-      {
-        avt: "https://i.pravatar.cc/50",
-        displayName: "Lorem Ipsum",
-        streak: 32,
-        relapseTime: 30,
-      },
-    ],
+    rankings: [],
   }),
-};
+  methods: {
+    getDate(timestamp) {
+      let past = new Date(timestamp).getTime();
+      let now = new Date();
+      let diff = now - past;
 
+      return Math.floor(diff / (1000 * 60 * 60 * 24));
+    },
+  },
+  beforeMount() {
+    const db = getFirestore();
+    const ref = collection(db, "users");
+    const qer = query(ref, orderBy("lastRelapse", "desc"));
+    onSnapshot(qer, (snap) => {
+      this.rankings=[]
+      snap.forEach((item) => {
+        this.rankings.push(item.data());
+      });
+      console.log(this.rankings);
+    });
+  },
+};
 </script>
 
 <style scoped></style>

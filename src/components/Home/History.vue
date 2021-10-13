@@ -45,8 +45,12 @@ export default {
         const db = getFirestore();
         const docRef = doc(db, "users", user.uid);
         onSnapshot(docRef, (snap) => {
-          this.history = snap.data().chart.slice(-10);
-          //console.log(snap.data().chart)
+          const raw = [0,0,0,0,0,0,0,0,0,0]
+          //raw.push(snap.data().history.map(item => item.long))
+          
+          console.log(raw)
+          this.history=raw.concat(snap.data().history.map(item => item.long)).slice(-10)
+          console.log(this.history)
         });
       }
     });

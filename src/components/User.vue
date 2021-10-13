@@ -22,7 +22,7 @@
             <v-chip color="warning"><h6>Kỷ Lục</h6></v-chip>
           </v-card-title>
           <v-card-text>
-            <h1 class="num text-center">123</h1>
+            <h1 class="num text-center">{{ record }}D</h1>
           </v-card-text>
         </v-card>
         <v-card class="mt-2 mx-auto" max-width="250px">
@@ -30,7 +30,7 @@
             <v-chip color="error"><h6>Số Lần Relapse</h6></v-chip>
           </v-card-title>
           <v-card-text>
-            <h1 class="num text-center">123</h1>
+            <h1 class="num text-center">{{ numOfRelapse }}</h1>
           </v-card-text>
         </v-card>
         <v-card class="mt-2 mx-auto" max-width="250px">
@@ -38,7 +38,7 @@
             <v-chip color="success"><h6>Xếp Hạng</h6></v-chip>
           </v-card-title>
           <v-card-text>
-            <h1 class="num text-center">123</h1>
+            <h4>Tính năng đang được cập nhật</h4>
           </v-card-text>
         </v-card>
       </v-col>
@@ -88,7 +88,7 @@
           </v-container>
         </v-card-text>
         <v-card-actions>
-          <v-btn text color="success" @click="update()">Update</v-btn>
+          <v-btn text color="success" @click="()=>{update();dialog = !dialog;}">Update</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -103,6 +103,7 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { doc, getFirestore, onSnapshot, updateDoc } from "@firebase/firestore";
 
 export default {
   name: "User",
@@ -112,7 +113,8 @@ export default {
     url: null,
     image: null,
     displayName: null,
-    numOfRelapse:0
+    numOfRelapse: 0,
+    record: 0,
   }),
   methods: {
     signout() {
@@ -125,6 +127,7 @@ export default {
       this.url = URL.createObjectURL(this.image);
     },
     update() {
+      
       if (this.image) {
         const storage = getStorage();
         const storageRef = ref(storage, this.user.uid + ".jpg");
@@ -137,6 +140,13 @@ export default {
               photoURL: url,
               displayName: this.displayName || user.displayName,
             }).then((user) => {
+              const db = getFirestore();
+              updateDoc(doc(db, "users", getAuth().currentUser.uid), {
+                avt: url,
+                displayName: getAuth().currentUser.displayName,
+              }).then(()=>{
+                console.log("updeawd")
+              });
               this.user = user;
               this.displayName = "";
               this.image = null;
@@ -149,19 +159,32 @@ export default {
         updateProfile(user, {
           displayName: this.displayName || user.displayName,
         }).then((user) => {
+          const db = getFirestore();
+          updateDoc(doc(db, "users", getAuth().currentUser.uid), {
+            displayName: getAuth().currentUser.displayName,
+          });
           this.user = user;
           this.displayName = "";
           this.image = null;
           alert("Cập nhật thành công");
         });
       }
-      this.dialog = false;
+      
     },
   },
   beforeMount() {
     onAuthStateChanged(getAuth(), (user) => {
       if (!user) this.$router.push("/signin");
-      else this.user = getAuth().currentUser;
+      else {
+        this.user = getAuth().currentUser;
+        const db = getFirestore();
+        onSnapshot(doc(db, "users", user.uid), (snap) => {
+          const data = snap.data();
+          this.numOfRelapse = data.numOfRelapse;
+          this.record = data.record;
+          console.log(this.numOfRelapse);
+        });
+      }
     });
   },
 };

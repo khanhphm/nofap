@@ -80,11 +80,12 @@ export default {
 
           let ref = doc(db, "users", auth.currentUser.uid);
           setDoc(ref, {
+            avt:"https://i.pravatar.cc/200",
             record: 0,
             history: [],
             lastRelapse: new Date().getTime(),
-            chart: [0,0,0,0,0,0,0,0,0,0],
             numOfRelapse: 0,
+            displayName: this.displayName
           });
 
           this.$router.push("/");

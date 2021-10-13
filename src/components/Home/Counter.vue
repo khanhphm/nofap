@@ -113,12 +113,12 @@ export default {
       const date = new Date()
       updateDoc(doc(db, "users", getAuth().currentUser.uid), {
         history: arrayUnion({
-          long: this.secs,
+          long: this.days,
           reason: this.reason,
-          date: date.getDate()+"/"+(date.getMonth()+1)+"/"+date.getFullYear()
+          date: date.getDate()+"/"+(date.getMonth()+1)+"/"+date.getFullYear(),
+          id: Date.now()
         }),
         lastRelapse: new Date().getTime(),
-        chart: arrayUnion(this.secs),
         numOfRelapse: increment(1)
       }).then((err) => {
         if (err) alert(err.message);
